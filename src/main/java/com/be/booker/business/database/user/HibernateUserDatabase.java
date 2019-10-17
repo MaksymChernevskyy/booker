@@ -1,7 +1,7 @@
 package com.be.booker.business.database.user;
 
 import com.be.booker.business.entity.User;
-import com.be.booker.business.database.RepositoryOperationException;
+import com.be.booker.business.database.DatabaseOperationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Repository;
 
-@ConditionalOnProperty(name = "com.be.booker.business.database.user", havingValue = "hibernate")
+@ConditionalOnProperty(name = "com.be.booker.business.database", havingValue = "hibernate")
 @Repository
 public class HibernateUserDatabase implements UserDatabase {
   private HibernateUserRepository hibernateUserRepository;
@@ -29,7 +29,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       return Optional.of(hibernateUserRepository.save(user));
     } catch (NonTransientDataAccessException e) {
-      throw new RepositoryOperationException("An error while saving user.", e);
+      throw new DatabaseOperationException("An error while saving user.", e);
     }
   }
 
@@ -41,7 +41,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       return hibernateUserRepository.findById(id);
     } catch (NoSuchElementException e) {
-      throw new RepositoryOperationException("An error while searching for user.", e);
+      throw new DatabaseOperationException("An error while searching for user.", e);
     }
   }
 
@@ -53,7 +53,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       return hibernateUserRepository.existsById(id);
     } catch (NonTransientDataAccessException e) {
-      throw new RepositoryOperationException("An error while searching for user.", e);
+      throw new DatabaseOperationException("An error while searching for user.", e);
     }
   }
 
@@ -62,7 +62,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       return Optional.of(hibernateUserRepository.findAll());
     } catch (NonTransientDataAccessException e) {
-      throw new RepositoryOperationException("An error while searching for user.", e);
+      throw new DatabaseOperationException("An error while searching for user.", e);
     }
   }
 
@@ -71,7 +71,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       return hibernateUserRepository.count();
     } catch (NonTransientDataAccessException e) {
-      throw new RepositoryOperationException("An error while counting users.", e);
+      throw new DatabaseOperationException("An error while counting users.", e);
     }
   }
 
@@ -83,7 +83,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       hibernateUserRepository.deleteById(id);
     } catch (EmptyResultDataAccessException e) {
-      throw new RepositoryOperationException("There was no user in database.", e);
+      throw new DatabaseOperationException("There was no user in database.", e);
     }
   }
 
@@ -92,7 +92,7 @@ public class HibernateUserDatabase implements UserDatabase {
     try {
       hibernateUserRepository.deleteAll();
     } catch (NonTransientDataAccessException e) {
-      throw new RepositoryOperationException("An error while deleting all users.", e);
+      throw new DatabaseOperationException("An error while deleting all users.", e);
     }
   }
 }

@@ -1,7 +1,7 @@
 package com.be.booker.business.database.user;
 
 import com.be.booker.business.entity.User;
-import com.be.booker.business.database.RepositoryOperationException;
+import com.be.booker.business.database.DatabaseOperationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-@ConditionalOnProperty(name = "com.be.booker.business.database.user", havingValue = "in-memory")
+@ConditionalOnProperty(name = "com.be.booker.business.database", havingValue = "in-memory")
 @Repository
 public class InMemoryUserRepository implements UserDatabase {
   private Map<Long, User> users = new HashMap<>();
@@ -75,7 +75,7 @@ public class InMemoryUserRepository implements UserDatabase {
         throw new IllegalArgumentException("Id cannot be null");
       }
       if (!isUserExist(id)) {
-        throw new RepositoryOperationException("User does not exist");
+        throw new DatabaseOperationException("User does not exist");
       }
       users.remove(id);
     }

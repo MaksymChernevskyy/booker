@@ -217,6 +217,12 @@
                                         </limit>
                                     </limits>
                                     <excludes>
+                                        <exclude>com.be.booker.business.database.DatabaseOperationException</exclude>
+                                        <exclude>com.be.booker.business.database.ServiceOperationException</exclude>
+                                        <exclude>com.be.booker.business.database.Booker</exclude>
+                                        <exclude>com.be.booker.business.database.rest.ErrorMessage</exclude>
+                                        <exclude>com.be.booker.business.database.entity</exclude>
+                                        <exclude>com.be.booker.business.database.*</exclude>
                                     </excludes>
                                 </rule>
                             </rules>

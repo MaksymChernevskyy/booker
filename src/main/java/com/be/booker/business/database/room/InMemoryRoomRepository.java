@@ -1,7 +1,7 @@
 package com.be.booker.business.database.room;
 
 import com.be.booker.business.entity.Room;
-import com.be.booker.business.database.RepositoryOperationException;
+import com.be.booker.business.database.DatabaseOperationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
-@ConditionalOnProperty(name = "com.be.booker.business.database.room", havingValue = "in-memory")
+@ConditionalOnProperty(name = "com.be.booker.business.database", havingValue = "in-memory")
 @Repository
 public class InMemoryRoomRepository implements RoomDatabase {
   private Map<Long, Room> rooms = new HashMap<>();
@@ -75,7 +75,7 @@ public class InMemoryRoomRepository implements RoomDatabase {
         throw new IllegalArgumentException("Id cannot be null");
       }
       if (!isRoomExist(id)) {
-        throw new RepositoryOperationException("Room does not exist");
+        throw new DatabaseOperationException("Room does not exist");
       }
       rooms.remove(id);
     }

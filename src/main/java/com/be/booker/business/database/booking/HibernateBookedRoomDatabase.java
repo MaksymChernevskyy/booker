@@ -1,7 +1,7 @@
-package com.be.booker.business.database.room;
+package com.be.booker.business.database.booking;
 
-import com.be.booker.business.entity.Room;
 import com.be.booker.business.database.DatabaseOperationException;
+import com.be.booker.business.entity.BookingRoom;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -13,32 +13,33 @@ import org.springframework.stereotype.Repository;
 
 @ConditionalOnProperty(name = "com.be.booker.business.database", havingValue = "hibernate")
 @Repository
-public class HibernateRoomDatabase implements RoomDatabase {
-  private HibernateRoomRepository hibernateRoomRepository;
+public class HibernateBookedRoomDatabase implements BookingDatabase {
+
+  private HibernateBookingRoomRepository hibernateBookingRoomRepository;
 
   @Autowired
-  public HibernateRoomDatabase(HibernateRoomRepository hibernateRoomRepository) {
-    this.hibernateRoomRepository = hibernateRoomRepository;
+  public HibernateBookedRoomDatabase(HibernateBookingRoomRepository hibernateBookingRoomRepository) {
+    this.hibernateBookingRoomRepository = hibernateBookingRoomRepository;
   }
 
-  public Optional<Room> save(Room room) {
-    if (room == null) {
+  public Optional<BookingRoom> save(BookingRoom bookingRoom) {
+    if (bookingRoom == null) {
       throw new IllegalArgumentException("Room cannot be null");
     }
     try {
-      return Optional.of(hibernateRoomRepository.save(room));
+      return Optional.of(hibernateBookingRoomRepository.save(bookingRoom));
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while saving room.", e);
     }
   }
 
   @Override
-  public Optional<Room> findById(Long id) {
+  public Optional<BookingRoom> findById(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
     try {
-      return hibernateRoomRepository.findById(id);
+      return hibernateBookingRoomRepository.findById(id);
     } catch (NoSuchElementException e) {
       throw new DatabaseOperationException("An error while searching for room.", e);
     }
@@ -50,16 +51,16 @@ public class HibernateRoomDatabase implements RoomDatabase {
       throw new IllegalArgumentException("Id cannot be null");
     }
     try {
-      return hibernateRoomRepository.existsById(id);
+      return hibernateBookingRoomRepository.existsById(id);
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while searching for room.", e);
     }
   }
 
   @Override
-  public Optional<List<Room>> findAll() {
+  public Optional<List<BookingRoom>> findAll() {
     try {
-      return Optional.of(hibernateRoomRepository.findAll());
+      return Optional.of(hibernateBookingRoomRepository.findAll());
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while searching for room.", e);
     }
@@ -68,7 +69,7 @@ public class HibernateRoomDatabase implements RoomDatabase {
   @Override
   public long count() {
     try {
-      return hibernateRoomRepository.count();
+      return hibernateBookingRoomRepository.count();
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while counting rooms.", e);
     }
@@ -80,7 +81,7 @@ public class HibernateRoomDatabase implements RoomDatabase {
       throw new IllegalArgumentException("Id cannot be null");
     }
     try {
-      hibernateRoomRepository.deleteById(id);
+      hibernateBookingRoomRepository.deleteById(id);
     } catch (EmptyResultDataAccessException e) {
       throw new DatabaseOperationException("There was no room in database.", e);
     }
@@ -89,7 +90,7 @@ public class HibernateRoomDatabase implements RoomDatabase {
   @Override
   public void deleteAll() {
     try {
-      hibernateRoomRepository.deleteAll();
+      hibernateBookingRoomRepository.deleteAll();
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while deleting all rooms.", e);
     }

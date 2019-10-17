@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 class RoomValidator extends Validator {
-  public static List<String> validate(Room room, boolean isIdRequired) {
+
+   static List<String> validate(Room room, boolean isIdRequired) {
     if (room == null) {
       return Collections.singletonList("Room cannot be null");
     }
@@ -16,7 +17,7 @@ class RoomValidator extends Validator {
       String resultOfIdValidation = validateId(room.getId());
       addResultOfValidation(result, resultOfIdValidation);
     }
-      String resultOfNameValidation = validateName(room.getRoomName());
+      String resultOfNameValidation = validateRoomName(room.getRoomName());
       addResultOfValidation(result, resultOfNameValidation);
       String resultOfLocationDescriptionValidation = validateLocationDescription(room.getLocationDescription());
       addResultOfValidation(result, resultOfLocationDescriptionValidation);
@@ -28,27 +29,11 @@ class RoomValidator extends Validator {
   }
 
   private static String validateId(Long id) {
-    if (id == null) {
-      return "Id cannot be null";
-    }
-    if (id <= 0) {
-      return "Id cannot be less than or equal to 0";
-    }
-    return null;
+    return IdValidator.validateId(id);
   }
 
-  private static String validateName(String name) {
-    if (name == null) {
-      return "Name cannot be null";
-    }
-    if (name.trim().isEmpty()) {
-      return "Name cannot be empty";
-    }
-    Matcher matcher = RegExpPatterns.namePattern.matcher(name);
-    if (!matcher.matches()) {
-      return "Incorrect name";
-    }
-    return null;
+  private static String validateRoomName(String roomName) {
+    return RoomNameValidator.validateRoomName(roomName);
   }
 
   private static String validateLocationDescription(String location) {

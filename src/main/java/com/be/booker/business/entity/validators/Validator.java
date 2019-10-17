@@ -2,7 +2,7 @@ package com.be.booker.business.entity.validators;
 
 import java.util.List;
 
-public class Validator {
+class Validator {
   static void addResultOfValidation(List<String> resultList, List<String> resultsOfValidation) {
     resultList.addAll(resultsOfValidation);
   }
