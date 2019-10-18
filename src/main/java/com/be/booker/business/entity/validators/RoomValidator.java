@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
-class RoomValidator extends Validator {
+public class RoomValidator extends Validator {
 
-   static List<String> validate(Room room, boolean isIdRequired) {
+   public static List<String> validate(Room room, boolean isIdRequired) {
     if (room == null) {
       return Collections.singletonList("Room cannot be null");
     }

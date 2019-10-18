@@ -1,4 +1,4 @@
-package com.be.booker.business.rest;
+package com.be.booker.boundary.application;
 
 import java.util.ArrayList;
 import java.util.List;

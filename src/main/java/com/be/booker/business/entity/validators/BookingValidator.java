@@ -1,6 +1,6 @@
 package com.be.booker.business.entity.validators;
 
-import com.be.booker.business.entity.BookingRoom;
+import com.be.booker.business.entity.Booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +8,9 @@ import java.util.List;
 
 public class BookingValidator extends Validator {
 
-  public static List<String> validate(BookingRoom bookingRooms, boolean isIdRequired) {
+  public static List<String> validate(Booking bookingRooms, boolean isIdRequired) {
     if (bookingRooms == null) {
-      return Collections.singletonList("Booking room cannot be null");
+      return Collections.singletonList("BookingController room cannot be null");
     }
     List<String> result = new ArrayList<>();
     if (isIdRequired) {

@@ -1,4 +1,4 @@
-package com.be.booker.business.configuration;
+package com.be.booker.boundary;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +29,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
     private ApiInfo apiInfo() {
       return new ApiInfoBuilder()
-          .title("Booking API")
-          .description("This panel allow you to test all possibilities of Booking API.")
+          .title("BookingController API")
+          .description("This panel allow you to test all possibilities of BookingController API.")
           .version("1.0.0")
           .build();
     }

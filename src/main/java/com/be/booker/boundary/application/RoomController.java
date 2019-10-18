@@ -1,6 +1,8 @@
-package com.be.booker.business.rest;
+package com.be.booker.boundary.application;
 
+import com.be.booker.boundary.application.ErrorMessage;
 import com.be.booker.business.entity.Room;
+import com.be.booker.business.entity.validators.RoomValidator;
 import com.be.booker.business.services.RoomService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoomController {
 
   private @Value("${admin.password}")
-  String administrarorPassword;
+  String adminPassword = "${admin.password}";
   private RoomService roomService;
 
   @Autowired
@@ -47,7 +49,6 @@ public class RoomController {
       response = Room.class,
       responseContainer = "List")
   @ApiResponses(value = {
-      @ApiResponse(code = 200, message = "OK", response = Room.class),
       @ApiResponse(code = 200, message = "OK", response = Room.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> getAll() {
@@ -92,10 +93,15 @@ public class RoomController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
       @ApiResponse(code = 201, message = "Created", response = Room.class),
+      @ApiResponse(code = 400, message = "Passed data is invalid.", response = ErrorMessage.class),
       @ApiResponse(code = 409, message = "Room already existsById", response = ErrorMessage.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> createRoom(@RequestBody(required = false) Room room) {
     try {
+      List<String> resultOfValidation = RoomValidator.validate(room, true);
+      if (resultOfValidation.size() > 0) {
+        return new ResponseEntity<>(new ErrorMessage("Passed room data is invalid.", resultOfValidation), HttpStatus.BAD_REQUEST);
+      }
       if (room.getId() == null || !roomService.roomExistingById(room.getId())) {
         Optional<Room> addedRoom = roomService.createRoom(room);
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -103,7 +109,6 @@ public class RoomController {
           responseHeaders.setLocation(URI.create(String.format("/room/%d", addedRoom.get().getId())));
           return new ResponseEntity<>(addedRoom.get(), responseHeaders, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(new ErrorMessage("Internal server error while adding room."), HttpStatus.INTERNAL_SERVER_ERROR);
       }
       return new ResponseEntity<>(new ErrorMessage("Room already exist."), HttpStatus.CONFLICT);
     } catch (Exception e) {
@@ -118,17 +123,22 @@ public class RoomController {
   @ApiImplicitParam(name = "id", value = "Only digits possible, e.g. 12", example = "12", dataType = "Long")
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "OK", response = Room.class),
+      @ApiResponse(code = 400, message = "Passed data is invalid.", response = ErrorMessage.class),
       @ApiResponse(code = 404, message = "Room not found for passed id.", response = ErrorMessage.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> updateRoom(@PathVariable("id") Long id, @RequestBody(required = false) Room room, @PathVariable String password) {
     try {
+      List<String> resultOfValidation = RoomValidator.validate(room, true);
+      if (resultOfValidation.size() > 0) {
+        return new ResponseEntity<>(new ErrorMessage("Passed room data is invalid.", resultOfValidation), HttpStatus.BAD_REQUEST);
+      }
       if (!id.equals(room.getId())) {
         return new ResponseEntity<>(new ErrorMessage(String.format("Room to update has different id than %d.", id)), HttpStatus.BAD_REQUEST);
       }
       if (!roomService.roomExistingById(id)) {
         return new ResponseEntity<>(new ErrorMessage(String.format("Room with %d id does not exist.", id)), HttpStatus.NOT_FOUND);
       }
-      if (password.equals(administrarorPassword)) {
+      if (password.equals(adminPassword)) {
         roomService.updateRoom(room);
       }
       return new ResponseEntity<>(room, HttpStatus.OK);
@@ -152,7 +162,7 @@ public class RoomController {
       if (!optionalRoom.isPresent()) {
         return new ResponseEntity<>(new ErrorMessage(String.format("Room with %d id does not exist.", id)), HttpStatus.NOT_FOUND);
       }
-      if (password.equals(administrarorPassword)) {
+      if (password.equals(adminPassword)) {
         roomService.deleteRoom(id);
       }
       return new ResponseEntity<>(HttpStatus.OK);

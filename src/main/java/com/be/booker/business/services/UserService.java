@@ -66,7 +66,7 @@ public class UserService {
     }
   }
 
-  public void deleteUser(Long id) throws ServiceOperationException {
+  public void deleteUser(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }
@@ -80,7 +80,7 @@ public class UserService {
     }
   }
 
-  public boolean userExistingById(Long id) throws ServiceOperationException {
+  public boolean userExistingById(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }

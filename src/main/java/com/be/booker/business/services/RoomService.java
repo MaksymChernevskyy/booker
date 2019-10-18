@@ -66,7 +66,7 @@ public class RoomService {
     }
   }
 
-  public void deleteRoom(Long id) throws ServiceOperationException {
+  public void deleteRoom(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }
@@ -80,7 +80,7 @@ public class RoomService {
     }
   }
 
-  public boolean roomExistingById(Long id) throws ServiceOperationException {
+  public boolean roomExistingById(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }

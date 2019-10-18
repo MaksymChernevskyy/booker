@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 
-class UserValidator extends Validator {
+public class UserValidator extends Validator {
 
-  static List<String> validate(User user, boolean isIdRequired) {
+  public static List<String> validate(User user, boolean isIdRequired) {
     if (user == null) {
       return Collections.singletonList("User cannot be null");
     }

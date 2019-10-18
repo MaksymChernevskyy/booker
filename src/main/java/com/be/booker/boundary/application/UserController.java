@@ -1,6 +1,8 @@
-package com.be.booker.business.rest;
+package com.be.booker.boundary.application;
 
+import com.be.booker.boundary.application.ErrorMessage;
 import com.be.booker.business.entity.User;
+import com.be.booker.business.entity.validators.UserValidator;
 import com.be.booker.business.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
   private @Value("${admin.password}")
-  String administrarorPassword;
+  String adminPassword = "${admin.password}";
   private UserService userService;
 
   @Autowired
@@ -107,10 +109,15 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
       @ApiResponse(code = 201, message = "Created", response = User.class),
+      @ApiResponse(code = 400, message = "Passed data is invalid.", response = ErrorMessage.class),
       @ApiResponse(code = 409, message = "User already existsById", response = ErrorMessage.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> createUser(@RequestBody(required = false) User user) {
     try {
+      List<String> resultOfValidation = UserValidator.validate(user, true);
+      if (resultOfValidation.size() > 0) {
+        return new ResponseEntity<>(new ErrorMessage("Passed user data is invalid.", resultOfValidation), HttpStatus.BAD_REQUEST);
+      }
       if (user.getId() == null || !userService.userExistingById(user.getId())) {
         Optional<User> addedUser = userService.createUser(user);
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -137,13 +144,17 @@ public class UserController {
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> updateUser(@PathVariable("id") Long id, @RequestBody(required = false) User user, @PathVariable String password) {
     try {
+      List<String> resultOfValidation = UserValidator.validate(user, true);
+      if (resultOfValidation.size() > 0) {
+        return new ResponseEntity<>(new ErrorMessage("Passed user data is invalid.", resultOfValidation), HttpStatus.BAD_REQUEST);
+      }
       if (!id.equals(user.getId())) {
         return new ResponseEntity<>(new ErrorMessage(String.format("User to update has different id than %d.", id)), HttpStatus.BAD_REQUEST);
       }
       if (!userService.userExistingById(id)) {
         return new ResponseEntity<>(new ErrorMessage(String.format("User with %d id does not exist.", id)), HttpStatus.NOT_FOUND);
       }
-      if (password.equals(administrarorPassword)) {
+      if (password.equals(adminPassword)) {
         userService.updateUser(user);
       }
       return new ResponseEntity<>(user, HttpStatus.OK);
@@ -167,7 +178,7 @@ public class UserController {
       if (!optionalUser.isPresent()) {
         return new ResponseEntity<>(new ErrorMessage(String.format("User with %d id does not exist.", id)), HttpStatus.NOT_FOUND);
       }
-      if (password.equals(administrarorPassword)) {
+      if (password.equals(adminPassword)) {
         userService.deleteUser(id);
       }
       return new ResponseEntity<>(HttpStatus.OK);

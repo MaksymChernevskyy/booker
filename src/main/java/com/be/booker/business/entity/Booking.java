@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class BookingRoom {
+public class Booking {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -62,10 +62,10 @@ public class BookingRoom {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof BookingRoom)) {
+    if (!(o instanceof Booking)) {
       return false;
     }
-    BookingRoom that = (BookingRoom) o;
+    Booking that = (Booking) o;
     return Objects.equals(id, that.id) &&
         Objects.equals(bookedFrom, that.bookedFrom) &&
         Objects.equals(bookedTo, that.bookedTo) &&
@@ -80,7 +80,7 @@ public class BookingRoom {
 
   @Override
   public String toString() {
-    return "BookingRoom{" +
+    return "BookingController{" +
         "id=" + id +
         ", bookedFrom=" + bookedFrom +
         ", bookedTo=" + bookedTo +

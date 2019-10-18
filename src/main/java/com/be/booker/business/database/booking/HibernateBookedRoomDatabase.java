@@ -1,7 +1,7 @@
 package com.be.booker.business.database.booking;
 
 import com.be.booker.business.database.DatabaseOperationException;
-import com.be.booker.business.entity.BookingRoom;
+import com.be.booker.business.entity.Booking;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -22,19 +22,19 @@ public class HibernateBookedRoomDatabase implements BookingDatabase {
     this.hibernateBookingRoomRepository = hibernateBookingRoomRepository;
   }
 
-  public Optional<BookingRoom> save(BookingRoom bookingRoom) {
-    if (bookingRoom == null) {
+  public Optional<Booking> save(Booking booking) {
+    if (booking == null) {
       throw new IllegalArgumentException("Room cannot be null");
     }
     try {
-      return Optional.of(hibernateBookingRoomRepository.save(bookingRoom));
+      return Optional.of(hibernateBookingRoomRepository.save(booking));
     } catch (NonTransientDataAccessException e) {
       throw new DatabaseOperationException("An error while saving room.", e);
     }
   }
 
   @Override
-  public Optional<BookingRoom> findById(Long id) {
+  public Optional<Booking> findById(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null");
     }
@@ -58,7 +58,7 @@ public class HibernateBookedRoomDatabase implements BookingDatabase {
   }
 
   @Override
-  public Optional<List<BookingRoom>> findAll() {
+  public Optional<List<Booking>> findAll() {
     try {
       return Optional.of(hibernateBookingRoomRepository.findAll());
     } catch (NonTransientDataAccessException e) {

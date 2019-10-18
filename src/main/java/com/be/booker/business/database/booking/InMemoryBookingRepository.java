@@ -1,7 +1,7 @@
 package com.be.booker.business.database.booking;
 
 import com.be.booker.business.database.DatabaseOperationException;
-import com.be.booker.business.entity.BookingRoom;
+import com.be.booker.business.entity.Booking;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,28 +15,28 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryBookingRepository implements BookingDatabase{
 
-    private Map<Long, BookingRoom> bookedRooms = new HashMap<>();
+    private Map<Long, Booking> bookedRooms = new HashMap<>();
     private AtomicLong counter = new AtomicLong();
     private final Object lock = new Object();
 
     @Override
-    public Optional<BookingRoom> save(BookingRoom bookingRoom) {
+    public Optional<Booking> save(Booking booking) {
       synchronized (lock) {
-        if (bookingRoom == null) {
+        if (booking == null) {
           throw new IllegalArgumentException("Room cannot be null");
         }
-        if (isRoomExist(bookingRoom.getId())) {
+        if (isRoomExist(booking.getId())) {
           throw new IllegalArgumentException("Room already exist");
         }
         long id = counter.incrementAndGet();
-        bookingRoom.setId(id);
-        bookedRooms.put(id, bookingRoom);
-        return Optional.of(bookingRoom);
+        booking.setId(id);
+        bookedRooms.put(id, booking);
+        return Optional.of(booking);
       }
     }
 
     @Override
-    public Optional<BookingRoom> findById(Long id) {
+    public Optional<Booking> findById(Long id) {
       synchronized (lock) {
         if (id == null) {
           throw new IllegalArgumentException("Id cannot be null");
@@ -56,7 +56,7 @@ public class InMemoryBookingRepository implements BookingDatabase{
     }
 
     @Override
-    public Optional<List<BookingRoom>> findAll() {
+    public Optional<List<Booking>> findAll() {
       synchronized (lock) {
         return Optional.of(new ArrayList<>(bookedRooms.values()));
       }

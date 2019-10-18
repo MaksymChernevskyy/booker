@@ -2,7 +2,7 @@ package com.be.booker.business.services;
 
 import com.be.booker.business.database.DatabaseOperationException;
 import com.be.booker.business.database.booking.BookingDatabase;
-import com.be.booker.business.entity.BookingRoom;
+import com.be.booker.business.entity.Booking;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,22 +20,22 @@ public class BookingService {
     this.bookingDatabase = bookingDatabase;
   }
 
-  public Optional<BookingRoom> createRoom(BookingRoom bookingRoom) {
-    if (bookingRoom == null) {
-      throw new IllegalArgumentException("Booking room cannot be null.");
+  public Optional<Booking> createBooking(Booking booking) {
+    if (booking == null) {
+      throw new IllegalArgumentException("BookingController room cannot be null.");
     }
     try {
-      Long id = bookingRoom.getId();
+      Long id = booking.getId();
       if (id != null && bookingDatabase.existsById(id)) {
         throw new ServiceOperationException(String.format("Room with id %s already existsById", id));
       }
-      return bookingDatabase.save(bookingRoom);
+      return bookingDatabase.save(booking);
     } catch (DatabaseOperationException e) {
       throw new ServiceOperationException("An error while booking room.", e);
     }
   }
 
-  public Optional<List<BookingRoom>> getAllBookedRoomsInGivenRange(LocalDateTime fromDate, LocalDateTime toDate) {
+  public Optional<List<Booking>> getAllBookingsInGivenRange(LocalDateTime fromDate, LocalDateTime toDate) {
     if (fromDate == null) {
       throw new IllegalArgumentException("fromDate cannot be null");
     }
@@ -45,8 +45,8 @@ public class BookingService {
     if (toDate.isBefore(fromDate)) {
       throw new IllegalArgumentException("toDate cannot be before fromDate.");
     }
-    Optional<List<BookingRoom>> allRoomsOptional = getAllRooms();
-    List<BookingRoom> roomsInDataRange = new ArrayList<>();
+    Optional<List<Booking>> allRoomsOptional = getAllBookings();
+    List<Booking> roomsInDataRange = new ArrayList<>();
     if (allRoomsOptional.isPresent()) {
       roomsInDataRange = allRoomsOptional
           .get()
@@ -57,12 +57,12 @@ public class BookingService {
     return Optional.of(roomsInDataRange);
   }
 
-  public Optional<List<BookingRoom>> getBookedRoomsByUser(String user) {
+  public Optional<List<Booking>> getBookingsByUser(String user) {
     if (user == null) {
       throw new IllegalArgumentException("user cannot be null");
     }
-    Optional<List<BookingRoom>> allRoomsOptional = getAllRooms();
-    List<BookingRoom> bookedRoomsByUser = new ArrayList<>();
+    Optional<List<Booking>> allRoomsOptional = getAllBookings();
+    List<Booking> bookedRoomsByUser = new ArrayList<>();
     if (allRoomsOptional.isPresent()) {
       bookedRoomsByUser = allRoomsOptional
           .get()
@@ -73,12 +73,12 @@ public class BookingService {
     return Optional.of(bookedRoomsByUser);
   }
 
-  public Optional<List<BookingRoom>> getAllBookedRoomsByUser(String user, LocalDateTime fromDate, LocalDateTime toDate) {
+  public Optional<List<Booking>> getAllBookedRoomsByUserInGivenRange(String user, LocalDateTime fromDate, LocalDateTime toDate) {
     if (user == null) {
       throw new IllegalArgumentException("user cannot be null");
     }
-    Optional<List<BookingRoom>> allRoomsOptional = getAllRooms();
-    List<BookingRoom> bookedRoomsByUser = new ArrayList<>();
+    Optional<List<Booking>> allRoomsOptional = getAllBookings();
+    List<Booking> bookedRoomsByUser = new ArrayList<>();
     if (allRoomsOptional.isPresent()) {
       bookedRoomsByUser = allRoomsOptional
           .get()
@@ -89,7 +89,7 @@ public class BookingService {
     return Optional.of(bookedRoomsByUser);
   }
 
-  public Optional<List<BookingRoom>> getAllRooms() {
+  public Optional<List<Booking>> getAllBookings() {
     try {
       return bookingDatabase.findAll();
     } catch (DatabaseOperationException e) {
@@ -97,7 +97,7 @@ public class BookingService {
     }
   }
 
-  public Optional<BookingRoom> getRoom(Long id) {
+  public Optional<Booking> getBooking(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }
@@ -108,7 +108,7 @@ public class BookingService {
     }
   }
 
-  public void updateRoom(BookingRoom room) {
+  public void updateBooking(Booking room) {
     if (room == null) {
       throw new IllegalArgumentException("Room cannot be null.");
     }
@@ -123,7 +123,7 @@ public class BookingService {
     }
   }
 
-  public void deleteRoom(Long id) throws ServiceOperationException {
+  public void deleteBooking(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }
@@ -137,7 +137,7 @@ public class BookingService {
     }
   }
 
-  public boolean roomExistingById(Long id) throws ServiceOperationException {
+  public boolean bookingExistingById(Long id) {
     if (id == null) {
       throw new IllegalArgumentException("Id cannot be null.");
     }
