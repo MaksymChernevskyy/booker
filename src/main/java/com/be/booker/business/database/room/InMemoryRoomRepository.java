@@ -1,7 +1,7 @@
 package com.be.booker.business.database.room;
 
-import com.be.booker.business.entity.Room;
 import com.be.booker.business.database.DatabaseOperationException;
+import com.be.booker.business.entity.Room;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +15,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryRoomRepository implements RoomDatabase {
   private Map<Long, Room> rooms = new HashMap<>();
-  private AtomicLong counter = new AtomicLong();
+  private AtomicLong counter = new AtomicLong(0);
   private final Object lock = new Object();
+
+  public InMemoryRoomRepository() {
+    DefaultRooms startData = new DefaultRooms();
+    save(startData.createLargeRoom());
+    save(startData.createMediumRoom());
+    save(startData.createSmallRoom());
+  }
 
   @Override
   public Optional<Room> save(Room room) {

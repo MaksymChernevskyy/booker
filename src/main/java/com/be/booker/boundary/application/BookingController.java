@@ -67,8 +67,8 @@ public class BookingController {
       @ApiResponse(code = 200, message = "OK", response = com.be.booker.business.entity.Booking.class),
       @ApiResponse(code = 404, message = "Not found", response = com.be.booker.business.entity.Booking.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
-  public ResponseEntity<?> getBookingsInGivenRange(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime from,
-                                                   @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime to) {
+  public ResponseEntity<?> getBookingsInGivenRange(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from,
+                                                   @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to) {
     try {
       Optional<List<com.be.booker.business.entity.Booking>> optionalBookingList = bookingService.getAllBookingsInGivenRange(from, to);
       return optionalBookingList.<ResponseEntity<?>>map(bookings -> new ResponseEntity<>(bookings, HttpStatus.OK)).orElseGet(() ->
@@ -78,7 +78,7 @@ public class BookingController {
     }
   }
 
-  @GetMapping("/byUser")
+  @GetMapping("/{user}")
   @ApiOperation(
       value = "Returns all bookings in given range",
       response = com.be.booker.business.entity.Booking.class,
@@ -105,8 +105,8 @@ public class BookingController {
   @ApiResponses(value = {
       @ApiResponse(code = 200, message = "OK", response = com.be.booker.business.entity.Booking.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
-  public ResponseEntity<?> getBookingsByUserInGivenRange(@PathVariable String user, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime from,
-                                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime to) {
+  public ResponseEntity<?> getBookingsByUserInGivenRange(@PathVariable String user, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from,
+                                                         @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to) {
     try {
       Optional<List<com.be.booker.business.entity.Booking>> optionalBookingList = bookingService.getAllBookedRoomsByUserInGivenRange(user, from, to);
       return optionalBookingList.<ResponseEntity<?>>map(bookings -> new ResponseEntity<>(bookings, HttpStatus.OK)).orElseGet(() ->

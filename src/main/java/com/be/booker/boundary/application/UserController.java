@@ -77,7 +77,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("/byName")
+  @GetMapping("/{name}")
   @ApiOperation(
       value = "Returns all filtered by user name.",
       response = User.class)

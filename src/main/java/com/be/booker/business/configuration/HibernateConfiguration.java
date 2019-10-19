@@ -1,5 +1,6 @@
 package com.be.booker.business.configuration;
 
+import com.be.booker.business.database.user.DefaultUsers;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -13,4 +14,5 @@ import org.springframework.context.annotation.Import;
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})
 public class HibernateConfiguration {
+  DefaultUsers defaultUsers = new DefaultUsers();
 }

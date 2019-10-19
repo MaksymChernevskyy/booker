@@ -15,8 +15,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryUserRepository implements UserDatabase {
   private Map<Long, User> users = new HashMap<>();
-  private AtomicLong counter = new AtomicLong();
+  private AtomicLong counter = new AtomicLong(0);
   private final Object lock = new Object();
+
+  public InMemoryUserRepository(){
+    DefaultUsers defaultUsers = new DefaultUsers();
+    save(defaultUsers.createJohn());
+    save(defaultUsers.createJane());
+  }
 
   @Override
   public Optional<User> save(User user) {

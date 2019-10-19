@@ -1,6 +1,5 @@
 package com.be.booker.boundary.application;
 
-import com.be.booker.boundary.application.ErrorMessage;
 import com.be.booker.business.entity.Room;
 import com.be.booker.business.entity.validators.RoomValidator;
 import com.be.booker.business.services.RoomService;
@@ -43,7 +42,7 @@ public class RoomController {
     this.roomService = roomService;
   }
 
-  @GetMapping
+  @GetMapping("/all")
   @ApiOperation(
       value = "Returns all rooms",
       response = Room.class,
@@ -53,15 +52,17 @@ public class RoomController {
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
   public ResponseEntity<?> getAll() {
     try {
-      Optional<List<Room>> optionalRoomList = roomService.getAllRooms();
-      return optionalRoomList.<ResponseEntity<?>>map(rooms -> new ResponseEntity<>(rooms, HttpStatus.OK)).orElseGet(() ->
-          new ResponseEntity<>(new ArrayList<Room>(), HttpStatus.OK));
+      Optional<List<Room>> optionalProductList = roomService.getAllRooms();
+      if (optionalProductList.isPresent()) {
+        return new ResponseEntity<>(optionalProductList.get(), HttpStatus.OK);
+      }
+      return new ResponseEntity<>(new ArrayList<Room>(), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(new ErrorMessage("Internal server error while getting rooms."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  @GetMapping("/byRoomName")
+  @GetMapping("/{roomName}")
   @ApiOperation(
       value = "Returns all filtered by room name.",
       response = Room.class)
@@ -70,19 +71,19 @@ public class RoomController {
       @ApiResponse(code = 200, message = "OK", response = Room.class),
       @ApiResponse(code = 404, message = "Rooms not found for passed name.", response = ErrorMessage.class),
       @ApiResponse(code = 500, message = "Internal server error.", response = ErrorMessage.class)})
-  public ResponseEntity<?> findByRoomName(@RequestParam("name") String name) {
+  public ResponseEntity<?> findByRoomName(@RequestParam("name") String roomName) {
     try {
       Optional<List<Room>> optionalRoomList = roomService.getAllRooms();
       if (optionalRoomList.isPresent()) {
         Optional<Room> optionalRoom = optionalRoomList.get()
             .stream()
-            .filter(roomToFind -> roomToFind.getRoomName().equals(name))
+            .filter(roomToFind -> roomToFind.getRoomName().equals(roomName))
             .findFirst();
-        return optionalRoom.<ResponseEntity<?>>map(room -> new ResponseEntity<>(room, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new ErrorMessage(String.format("Room not found for passed name: %s", name)), HttpStatus.NOT_FOUND));
+        return optionalRoom.<ResponseEntity<?>>map(room -> new ResponseEntity<>(room, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new ErrorMessage(String.format("Room not found for passed name: %s", roomName)), HttpStatus.NOT_FOUND));
       }
-      return new ResponseEntity<>(new ErrorMessage(String.format("Room not found for passed name: %s", name)), HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(new ErrorMessage(String.format("Room not found for passed name: %s", roomName)), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
-      return new ResponseEntity<>(new ErrorMessage(String.format("Internal server error while getting room by name: %s", name)), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new ErrorMessage(String.format("Internal server error while getting room by name: %s", roomName)), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
