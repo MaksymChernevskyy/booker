@@ -1,5 +1,6 @@
 package com.be.booker.business.services;
 
+import com.be.booker.business.entity.Room;
 import com.be.booker.business.entitydto.RoomDto;
 import com.be.booker.business.repository.RoomRepository;
 import com.be.booker.business.usecases.room.DeleteRoomUsecase;
@@ -28,8 +29,8 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    public void saveRoom(RoomDto roomDto) {
-        saveRoomUsecase
+    public Room saveRoom(RoomDto roomDto) {
+        return saveRoomUsecase
                 .withRoomRepository(roomRepository)
                 .forRoom(roomDto)
                 .run();

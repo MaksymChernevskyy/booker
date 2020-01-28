@@ -1,5 +1,6 @@
 package com.be.booker.business.services;
 
+import com.be.booker.business.entity.User;
 import com.be.booker.business.entitydto.UserDto;
 import com.be.booker.business.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.repository.UserRepository;
@@ -31,8 +32,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void saveUser(UserDto userDto) {
-        saveUserUsecase
+    public User saveUser(UserDto userDto) {
+        return saveUserUsecase
                 .withUserRepository(userRepository)
                 .forUser(userDto)
                 .run();

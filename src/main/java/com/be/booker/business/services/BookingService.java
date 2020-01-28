@@ -1,5 +1,6 @@
 package com.be.booker.business.services;
 
+import com.be.booker.business.entity.Booking;
 import com.be.booker.business.entitydto.RoomBookingDto;
 import com.be.booker.business.entitydto.RoomBookingNameAndSurnameDto;
 import com.be.booker.business.repository.BookingRepository;
@@ -38,8 +39,8 @@ public class BookingService {
 
     }
 
-    public void bookTheRoom(RoomBookingDto roomBookingDto) {
-        bookingRoomUsecase
+    public Booking bookTheRoom(RoomBookingDto roomBookingDto) {
+        return bookingRoomUsecase
                 .withBookingRepository(bookingRepository)
                 .withRoomRepository(roomRepository)
                 .withUserRepository(userRepository)

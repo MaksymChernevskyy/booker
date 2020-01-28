@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="booker" options="-parameters" />
+      <module name="booker" options="" />
     </option>
   </component>
 </project>
