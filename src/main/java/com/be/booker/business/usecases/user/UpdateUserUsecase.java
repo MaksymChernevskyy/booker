@@ -33,13 +33,13 @@ public class UpdateUserUsecase {
 
   private void updateUser() {
     User userForUpdate = userRepository.findById(userLogin).orElseThrow(() -> new BadRequestException("No such user."));
-    if (userDto.getName() != null && !userDto.getName().isEmpty() && !userDto.getName().equals(userForUpdate.getName())) {
+    if (!userDto.getName().isEmpty() && !userDto.getName().equals(userForUpdate.getName())) {
       userForUpdate.setName(userDto.getName());
     }
-    if (userDto.getPassword() != null && !userDto.getPassword().isEmpty() && !userDto.getPassword().equals(userForUpdate.getPassword())) {
+    if (!userDto.getPassword().isEmpty() && !userDto.getPassword().equals(userForUpdate.getPassword())) {
       userForUpdate.setPassword(userDto.getPassword());
     }
-    if (userDto.getSurname() != null && !userDto.getSurname().isEmpty() && !userDto.getSurname().equals(userForUpdate.getSurname())) {
+    if (!userDto.getSurname().isEmpty() && !userDto.getSurname().equals(userForUpdate.getSurname())) {
       userForUpdate.setSurname(userDto.getSurname());
     }
   }
