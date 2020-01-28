@@ -1,91 +1,32 @@
 package com.be.booker.business.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
+@Table(name = "booking")
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Booking {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  private LocalDateTime bookedFrom;
-  private LocalDateTime bookedTo;
-  private String userName;
-  private String roomName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  public Long getId() {
-    return id;
-  }
+    @Column(name = "bookedFrom")
+    private LocalDateTime bookedFrom;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @Column(name = "bookedTo")
+    private LocalDateTime bookedTo;
 
-  public LocalDateTime getBookedFrom() {
-    return bookedFrom;
-  }
+    @Column(name = "userlogin")
+    private String userLogin;
 
-  public void setBookedFrom(LocalDateTime bookedFrom) {
-    this.bookedFrom = bookedFrom;
-  }
+    @Column(name = "roomName")
+    private String roomName;
 
-  public LocalDateTime getBookedTo() {
-    return bookedTo;
-  }
-
-  public void setBookedTo(LocalDateTime bookedTo) {
-    this.bookedTo = bookedTo;
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-
-  public String getRoomName() {
-    return roomName;
-  }
-
-  public void setRoomName(String roomName) {
-    this.roomName = roomName;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Booking)) {
-      return false;
-    }
-    Booking that = (Booking) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(bookedFrom, that.bookedFrom) &&
-        Objects.equals(bookedTo, that.bookedTo) &&
-        Objects.equals(userName, that.userName) &&
-        Objects.equals(roomName, that.roomName);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, bookedFrom, bookedTo, userName, roomName);
-  }
-
-  @Override
-  public String toString() {
-    return "BookingController{" +
-        "id=" + id +
-        ", bookedFrom=" + bookedFrom +
-        ", bookedTo=" + bookedTo +
-        ", userName='" + userName + '\'' +
-        ", roomName='" + roomName + '\'' +
-        '}';
-  }
 }

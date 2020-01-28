@@ -1,101 +1,76 @@
 package com.be.booker.business.entity;
 
-import java.util.Objects;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 @Entity
+@Table(name = "rooms")
+@Data
+@Setter
+@Getter
+@EqualsAndHashCode
 public class Room {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  private String roomName;
-  private String locationDescription;
-  private int numberOfSeats;
-  private boolean containProjector;
-  private String phoneNumber;
+    @Id
+    @Column(name = "name")
+    private String roomName;
 
-  public Long getId() {
-    return id;
-  }
+    @Column(name = "locationDescription", columnDefinition = "varchar (255) default 'na'")
+    private String locationDescription;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @Column(name = "numberOfSeats")
+    private int numberOfSeats;
 
-  public String getRoomName() {
-    return roomName;
-  }
+    @Column(name = "isContainsProjecctor", columnDefinition = "boolean default false")
+    private boolean containProjector;
 
-  public void setRoomName(String roomName) {
-    this.roomName = roomName;
-  }
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
 
-  public String getLocationDescription() {
-    return locationDescription;
-  }
-
-  public void setLocationDescription(String locationDescription) {
-    this.locationDescription = locationDescription;
-  }
-
-  public int getNumberOfSeats() {
-    return numberOfSeats;
-  }
-
-  public void setNumberOfSeats(int numberOfSeats) {
-    this.numberOfSeats = numberOfSeats;
-  }
-
-  public boolean isContainProjector() {
-    return containProjector;
-  }
-
-  public void setContainProjector(boolean containProjector) {
-    this.containProjector = containProjector;
-  }
-
-  public String getPhoneNumber() {
-    return phoneNumber;
-  }
-
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public String getRoomName() {
+        return roomName;
     }
-    if (!(o instanceof Room)) {
-      return false;
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
-    Room room = (Room) o;
-    return numberOfSeats == room.numberOfSeats &&
-        containProjector == room.containProjector &&
-        Objects.equals(id, room.id) &&
-        Objects.equals(roomName, room.roomName) &&
-        Objects.equals(locationDescription, room.locationDescription) &&
-        Objects.equals(phoneNumber, room.phoneNumber);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, roomName, locationDescription, numberOfSeats, containProjector, phoneNumber);
-  }
+    public String getLocationDescription() {
+        return locationDescription;
+    }
 
-  @Override
-  public String toString() {
-    return "Room{" +
-        "id=" + id +
-        ", roomName='" + roomName + '\'' +
-        ", locationDescription='" + locationDescription + '\'' +
-        ", numberOfSeats=" + numberOfSeats +
-        ", containProjector=" + containProjector +
-        ", phoneNumber='" + phoneNumber + '\'' +
-        '}';
-  }
+    public void setLocationDescription(String locationDescription) {
+        this.locationDescription = locationDescription;
+    }
+
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public boolean isContainProjector() {
+        return containProjector;
+    }
+
+    public void setContainProjector(boolean containProjector) {
+        this.containProjector = containProjector;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

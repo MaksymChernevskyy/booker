@@ -1,93 +1,61 @@
 package com.be.booker.business.services;
 
-import com.be.booker.business.database.DatabaseOperationException;
-import com.be.booker.business.database.user.UserDatabase;
-import com.be.booker.business.entity.User;
-import java.util.List;
-import java.util.Optional;
+import com.be.booker.business.entitydto.UserDto;
+import com.be.booker.business.entitydto.UserWithoutPasswordDto;
+import com.be.booker.business.repository.UserRepository;
+import com.be.booker.business.usecases.user.DeleteUserUsecase;
+import com.be.booker.business.usecases.user.GetAllUsersUsecase;
+import com.be.booker.business.usecases.user.SaveUserUsecase;
+import com.be.booker.business.usecases.user.UpdateUserUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
-  private UserDatabase userDatabase;
+    private DeleteUserUsecase deleteUserUsecase;
+    private SaveUserUsecase saveUserUsecase;
+    private UpdateUserUsecase updateUserUsecase;
+    private GetAllUsersUsecase getAllUsersUsecase;
+    private UserRepository userRepository;
 
-  @Autowired
-  public UserService(UserDatabase userDatabase) {
-    this.userDatabase = userDatabase;
-  }
+    @Autowired
+    public UserService(DeleteUserUsecase deleteRoomUsecase, SaveUserUsecase saveRoomUsecase, UpdateUserUsecase updateUserUsecase,
+                       GetAllUsersUsecase getAllUsersUsecase, UserRepository userRepository) {
+        this.deleteUserUsecase = deleteRoomUsecase;
+        this.saveUserUsecase = saveRoomUsecase;
+        this.updateUserUsecase = updateUserUsecase;
+        this.getAllUsersUsecase = getAllUsersUsecase;
+        this.userRepository = userRepository;
+    }
 
-  public Optional<User> createUser(User user) {
-    if (user == null) {
-      throw new IllegalArgumentException("User cannot be null.");
+    public void saveUser(UserDto userDto) {
+        saveUserUsecase
+                .withUserRepository(userRepository)
+                .forUser(userDto)
+                .run();
     }
-    try {
-      Long id = user.getId();
-      if (id != null && userDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("User with id %s already existsById", id));
-      }
-      return userDatabase.save(user);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while adding user.", e);
-    }
-  }
 
-  public Optional<List<User>> getAllUsers() {
-    try {
-      return userDatabase.findAll();
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while getting all users", e);
+    public List<UserWithoutPasswordDto> getAllUsers() {
+        return getAllUsersUsecase
+                .withUserRepository(userRepository)
+                .run();
     }
-  }
 
-  public Optional<User> getUser(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
+    public void deleteUser(String userLogin) {
+        deleteUserUsecase
+                .withUserRepository(userRepository)
+                .forUserId(userLogin)
+                .run();
     }
-    try {
-      return userDatabase.findById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while getting user.", e);
-    }
-  }
 
-  public void updateUser(User user) {
-    if (user == null) {
-      throw new IllegalArgumentException("User cannot be null.");
+    public void updateUser(String userLogin, UserDto userDto) {
+        updateUserUsecase
+                .withUserRepository(userRepository)
+                .withUserLogin(userLogin)
+                .forUserDto(userDto)
+                .run();
     }
-    try {
-      Long id = user.getId();
-      if (id == null || !userDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("User with id %s does not exist", id));
-      }
-      userDatabase.save(user);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while updating user.", e);
-    }
-  }
-
-  public void deleteUser(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
-    }
-    try {
-      if (!userDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("User with id %s does not exist", id));
-      }
-      userDatabase.deleteById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while deleting user.", e);
-    }
-  }
-
-  public boolean userExistingById(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
-    }
-    try {
-      return userDatabase.existsById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while checking if user exist.", e);
-    }
-  }
 }

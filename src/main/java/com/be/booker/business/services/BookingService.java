@@ -1,150 +1,83 @@
 package com.be.booker.business.services;
 
-import com.be.booker.business.database.DatabaseOperationException;
-import com.be.booker.business.database.booking.BookingDatabase;
-import com.be.booker.business.entity.Booking;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.be.booker.business.entitydto.RoomBookingDto;
+import com.be.booker.business.entitydto.RoomBookingNameAndSurnameDto;
+import com.be.booker.business.repository.BookingRepository;
+import com.be.booker.business.repository.RoomRepository;
+import com.be.booker.business.repository.UserRepository;
+import com.be.booker.business.usecases.booking.*;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BookingService {
-  private BookingDatabase bookingDatabase;
+    private BookingRoomUsecase bookingRoomUsecase;
+    private DateChecker dateChecker;
+    private GetBookingScheduleForAllRoomsUsecase getBookingScheduleForAllRoomsUsecase;
+    private GetBookingScheduleForGivenRoomUsecase getBookingScheduleForGivenRoomUsecase;
+    private GetBookingScheduleForGivenUserUsecase getBookingScheduleForGivenUserUsecase;
+    private MapBookings mapBookings;
+    private BookingRepository bookingRepository;
+    private UserRepository userRepository;
+    private RoomRepository roomRepository;
 
-  @Autowired
-  public BookingService(BookingDatabase bookingDatabase) {
-    this.bookingDatabase = bookingDatabase;
-  }
+    public BookingService(BookingRoomUsecase bookingRoomUsecase, DateChecker dateChecker, GetBookingScheduleForAllRoomsUsecase getBookingScheduleForAllRoomsUsecase,
+                          GetBookingScheduleForGivenRoomUsecase getBookingScheduleForGivenRoomUsecase, GetBookingScheduleForGivenUserUsecase getBookingScheduleForGivenUserUsecase, MapBookings mapBookings,
+                          BookingRepository bookingRepository, UserRepository userRepository, RoomRepository roomRepository) {
+        this.bookingRoomUsecase = bookingRoomUsecase;
+        this.dateChecker = dateChecker;
+        this.getBookingScheduleForAllRoomsUsecase = getBookingScheduleForAllRoomsUsecase;
+        this.getBookingScheduleForGivenRoomUsecase = getBookingScheduleForGivenRoomUsecase;
+        this.getBookingScheduleForGivenUserUsecase = getBookingScheduleForGivenUserUsecase;
+        this.mapBookings = mapBookings;
+        this.bookingRepository = bookingRepository;
+        this.userRepository = userRepository;
+        this.roomRepository = roomRepository;
 
-  public Optional<Booking> createBooking(Booking booking) {
-    if (booking == null) {
-      throw new IllegalArgumentException("BookingController room cannot be null.");
     }
-    try {
-      Long id = booking.getId();
-      if (id != null && bookingDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("Room with id %s already existsById", id));
-      }
-      return bookingDatabase.save(booking);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while booking room.", e);
-    }
-  }
 
-  public Optional<List<Booking>> getAllBookingsInGivenRange(LocalDateTime fromDate, LocalDateTime toDate) {
-    if (fromDate == null) {
-      throw new IllegalArgumentException("fromDate cannot be null");
-    }
-    if (toDate == null) {
-      throw new IllegalArgumentException("toDate cannot be null");
-    }
-    if (toDate.isBefore(fromDate)) {
-      throw new IllegalArgumentException("toDate cannot be before fromDate.");
-    }
-    Optional<List<Booking>> allRoomsOptional = getAllBookings();
-    List<Booking> roomsInDataRange = new ArrayList<>();
-    if (allRoomsOptional.isPresent()) {
-      roomsInDataRange = allRoomsOptional
-          .get()
-          .stream()
-          .filter(bookingRoom -> bookingRoom.getBookedFrom().compareTo(fromDate) >= 0 && bookingRoom.getBookedTo().compareTo(toDate) <= 0)
-          .collect(Collectors.toList());
-    }
-    return Optional.of(roomsInDataRange);
-  }
+    public void bookTheRoom(RoomBookingDto roomBookingDto) {
+        bookingRoomUsecase
+                .withBookingRepository(bookingRepository)
+                .withRoomRepository(roomRepository)
+                .withUserRepository(userRepository)
+                .withRoomBookingDto(roomBookingDto)
+                .withDateChecker(dateChecker)
+                .run();
 
-  public Optional<List<Booking>> getBookingsByUser(String user) {
-    if (user == null) {
-      throw new IllegalArgumentException("user cannot be null");
     }
-    Optional<List<Booking>> allRoomsOptional = getAllBookings();
-    List<Booking> bookedRoomsByUser = new ArrayList<>();
-    if (allRoomsOptional.isPresent()) {
-      bookedRoomsByUser = allRoomsOptional
-          .get()
-          .stream()
-          .filter(bookingRoom -> bookingRoom.getUserName().contains(user))
-          .collect(Collectors.toList());
-    }
-    return Optional.of(bookedRoomsByUser);
-  }
 
-  public Optional<List<Booking>> getAllBookedRoomsByUserInGivenRange(String user, LocalDateTime fromDate, LocalDateTime toDate) {
-    if (user == null) {
-      throw new IllegalArgumentException("user cannot be null");
+    public List<RoomBookingNameAndSurnameDto> getBookingScheduleForAllRooms(LocalDateTime bookedFrom, LocalDateTime bookedTo) {
+        return getBookingScheduleForAllRoomsUsecase
+                .withBookingRepository(bookingRepository)
+                .withDateChecker(dateChecker)
+                .withMapBookings(mapBookings)
+                .withBookFromDate(bookedFrom)
+                .withBookToDate(bookedTo)
+                .run();
     }
-    Optional<List<Booking>> allRoomsOptional = getAllBookings();
-    List<Booking> bookedRoomsByUser = new ArrayList<>();
-    if (allRoomsOptional.isPresent()) {
-      bookedRoomsByUser = allRoomsOptional
-          .get()
-          .stream()
-          .filter(bookingRoom -> bookingRoom.getUserName().contains(user) && bookingRoom.getBookedFrom().compareTo(fromDate) >= 0 && bookingRoom.getBookedTo().compareTo(toDate) <= 0)
-          .collect(Collectors.toList());
-    }
-    return Optional.of(bookedRoomsByUser);
-  }
 
-  public Optional<List<Booking>> getAllBookings() {
-    try {
-      return bookingDatabase.findAll();
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while getting all rooms", e);
+    public List<RoomBookingNameAndSurnameDto> getBookingScheduleForGivenRoom(LocalDateTime bookedFrom, LocalDateTime bookedTo, String roomName) {
+        return getBookingScheduleForGivenRoomUsecase
+                .withBookingRepository(bookingRepository)
+                .withBookingRepository(roomRepository)
+                .withBookedFromDate(bookedFrom)
+                .withBookedTo(bookedTo)
+                .withRoomName(roomName)
+                .withMapBookings(mapBookings)
+                .run();
     }
-  }
 
-  public Optional<Booking> getBooking(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
+    public List<RoomBookingNameAndSurnameDto> getBookingScheduleForGivenUser(LocalDateTime bookedFrom, LocalDateTime bookedTo, String userLogin) {
+        return getBookingScheduleForGivenUserUsecase
+                .withBookingRepository(bookingRepository)
+                .withUserRepository(userRepository)
+                .withBookedFrom(bookedFrom)
+                .withBookedTo(bookedTo)
+                .withUserLogin(userLogin)
+                .withMapBookings(mapBookings)
+                .run();
     }
-    try {
-      return bookingDatabase.findById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while getting room.", e);
-    }
-  }
-
-  public void updateBooking(Booking room) {
-    if (room == null) {
-      throw new IllegalArgumentException("Room cannot be null.");
-    }
-    try {
-      Long id = room.getId();
-      if (id == null || !bookingDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("Room with id %s does not exist", id));
-      }
-      bookingDatabase.save(room);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while updating room.", e);
-    }
-  }
-
-  public void deleteBooking(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
-    }
-    try {
-      if (!bookingDatabase.existsById(id)) {
-        throw new ServiceOperationException(String.format("Room with id %s does not exist", id));
-      }
-      bookingDatabase.deleteById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while deleting room.", e);
-    }
-  }
-
-  public boolean bookingExistingById(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("Id cannot be null.");
-    }
-    try {
-      return bookingDatabase.existsById(id);
-    } catch (DatabaseOperationException e) {
-      throw new ServiceOperationException("An error while checking if room exist.", e);
-    }
-  }
 }
