@@ -5,11 +5,10 @@ import com.be.booker.business.entitydto.RoomBookingNameAndSurnameDto;
 import com.be.booker.business.exceptions.BadRequestException;
 import com.be.booker.business.repository.BookingRepository;
 import com.be.booker.business.repository.RoomRepository;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class GetBookingScheduleForGivenRoomUsecase {
@@ -19,6 +18,7 @@ public class GetBookingScheduleForGivenRoomUsecase {
     private LocalDateTime bookedTo;
     private String roomName;
     private MapBookings mapBookings;
+    private DateChecker dateChecker;
 
     public GetBookingScheduleForGivenRoomUsecase withBookingRepository(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
@@ -50,11 +50,17 @@ public class GetBookingScheduleForGivenRoomUsecase {
         return this;
     }
 
+    public GetBookingScheduleForGivenRoomUsecase withDateChecker(DateChecker dateChecker) {
+        this.dateChecker = dateChecker;
+        return this;
+    }
+
     public List<RoomBookingNameAndSurnameDto> run() {
         return getBookingScheduleForGivenRoom();
     }
 
     private List<RoomBookingNameAndSurnameDto> getBookingScheduleForGivenRoom() {
+        dateChecker.dateCheckerForSearching(bookedFrom, bookedTo);
         roomRepository.findById(roomName).orElseThrow(() -> new BadRequestException("No such room"));
         List<Booking> bookingListt = new ArrayList<>();
         if (bookedFrom != null && bookedTo != null) {

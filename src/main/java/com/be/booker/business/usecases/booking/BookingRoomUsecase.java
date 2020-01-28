@@ -47,7 +47,7 @@ public class BookingRoomUsecase {
   }
 
   private Booking bookingRoom() {
-    dateChecker.dateCheck(roomBookingDto.getBookedFrom(), roomBookingDto.getBookedTo());
+    dateChecker.dateCheckerForSave(roomBookingDto.getBookedFrom(), roomBookingDto.getBookedTo());
     roomRepository.findById(roomBookingDto.getRoomName()).orElseThrow(() -> new BadRequestException("No such room."));
     userRepository.findById(roomBookingDto.getUserLogin()).orElseThrow(() -> new BadRequestException("No such user."));
     List<Booking> booking = bookingRepository.getAllBookingsWithInDateFrameAndRoom(roomBookingDto.getBookedFrom(),

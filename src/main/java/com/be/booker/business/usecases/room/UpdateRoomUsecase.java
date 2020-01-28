@@ -33,11 +33,10 @@ public class UpdateRoomUsecase {
 
     private void roomForUpdate() {
         Room updatedRoom = roomRepository.findById(roomName).orElseThrow(() -> new BadRequestException("No such room."));
-
         if (roomDto.getLocationDescription() != null && !roomDto.getLocationDescription().isEmpty() && !roomDto.getLocationDescription().equals(updatedRoom.getLocationDescription())) {
             updatedRoom.setLocationDescription(roomDto.getLocationDescription());
         }
-        if (roomDto.getNumberOfSeats() != null && roomDto.getNumberOfSeats() != updatedRoom.getNumberOfSeats()) {
+        if (roomDto.getNumberOfSeats() != updatedRoom.getNumberOfSeats()) {
             updatedRoom.setNumberOfSeats(roomDto.getNumberOfSeats());
         }
         if (roomDto.getContainProjector() != null && !roomDto.getContainProjector().equals(updatedRoom.isContainProjector())) {
