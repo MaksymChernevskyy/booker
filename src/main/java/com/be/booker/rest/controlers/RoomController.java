@@ -29,21 +29,40 @@ public class RoomController {
         Room addedRoom = roomService.saveRoom(roomDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setLocation(URI.create(String.format("/room/%s", addedRoom.getRoomName())));
-        return new ResponseEntity<>(addedRoom, responseHeaders, HttpStatus.CREATED);
+        return getResponseForSuccess(addedRoom, responseHeaders);
     }
 
     @PutMapping("/{roomName}")
-    public void update(@PathVariable String roomName, @Valid @RequestBody RoomDto roomDto) {
+    public ResponseEntity<?> update(@PathVariable String roomName, @Valid @RequestBody RoomDto roomDto) {
         roomService.updateRoom(roomName, roomDto);
+        return getResponseForSuccess(roomDto);
     }
 
     @DeleteMapping({"/{roomName}"})
-    public void delete(@PathVariable String roomName) {
+    public ResponseEntity<?> delete(@PathVariable String roomName) {
         roomService.deleteRoom(roomName);
+        return getResponseForSuccess();
     }
 
     @GetMapping({"", "/"})
-    public List<RoomDto> getAllRooms() {
-        return roomService.getAllRooms();
+    public ResponseEntity<?> getAllRooms() {
+        List<RoomDto> list = roomService.getAllRooms();
+        return getResponseForSuccess(list);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(List<RoomDto> list) {
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(Room addedRoom, HttpHeaders responseHeaders) {
+        return new ResponseEntity<>(addedRoom, responseHeaders, HttpStatus.CREATED);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(@RequestBody @Valid RoomDto roomDto) {
+        return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
 }

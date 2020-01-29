@@ -110,7 +110,7 @@ public class BookingService {
 
     public List<RoomBookingNameAndSurnameDto> getAllBookingsForRoomInGivenTimeRange(LocalDateTime bookedFrom, LocalDateTime bookedTo, String roomName) {
         return getAllBookingsForRoomInGivenTimeRangeUsecase
-                .withRoomRepository(bookingRepository)
+                .withBookingRepository(bookingRepository)
                 .withRoomRepository(roomRepository)
                 .withDateChecker(dateChecker)
                 .withBookedFromDate(bookedFrom)

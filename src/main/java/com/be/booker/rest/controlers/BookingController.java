@@ -32,66 +32,86 @@ public class BookingController {
         Booking bookedRoom = bookingService.bookTheRoom(roomBookingDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setLocation(URI.create(String.format("/room/%d", bookedRoom.getId())));
-        return new ResponseEntity<>(bookedRoom, responseHeaders, HttpStatus.CREATED);
+        return responseForSuccess(bookedRoom, responseHeaders);
     }
 
     @GetMapping
-    public List<RoomBookingNameAndSurnameDto> getBookingScheduleForAllRoomsInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo) {
-        return bookingService.getBookingScheduleForAllBookingsInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter));
+    public ResponseEntity<?> getBookingScheduleForAllRoomsInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingScheduleForAllBookingsInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
-    @GetMapping("/givenRoomByTimeRange")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsForRoomInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String roomName) {
-        return bookingService.getAllBookingsForRoomInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), roomName);
+    @GetMapping("{/givenRoomByTimeRange}")
+    public ResponseEntity<?> getAllBookingsForRoomInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String roomName) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsForRoomInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), roomName);
+        return responseForSuccess(list);
     }
 
     @GetMapping({"/givenUser"})
-    public List<RoomBookingNameAndSurnameDto> getBookingScheduleForGivenUser(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String userLogin) {
-        return bookingService.getBookingScheduleForGivenUserInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), userLogin);
+    public ResponseEntity<?> getBookingScheduleForGivenUser(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String userLogin) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingScheduleForGivenUserInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), userLogin);
+        return responseForSuccess(list);
     }
 
     @GetMapping({"/allBookings"})
-    public List<RoomBookingNameAndSurnameDto> getAllBookings() {
-        return bookingService.getAllBookings();
+    public ResponseEntity<?> getAllBookings() {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookings();
+        return responseForSuccess(list);
     }
 
     @GetMapping("/allBookingsFuture")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsInFuture(@RequestParam(required = false) String bookedFrom) {
-        return bookingService.getAllBookingsInFuture(LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsInFuture(@RequestParam(required = false) String bookedFrom) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsInFuture(LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
     @GetMapping("/allBookingsPast")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsInPast(@RequestParam(required = false) String bookedTo) {
-        return bookingService.getAllBookingsInPast(LocalDateTime.parse(bookedTo, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsInPast(@RequestParam(required = false) String bookedTo) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsInPast(LocalDateTime.parse(bookedTo, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
     @GetMapping("{/roomName}")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByRoomName(@RequestParam String roomName) {
-        return bookingService.getAllBookingsByRoomName(roomName);
+    public ResponseEntity<?> getAllBookingsByRoomName(@RequestParam String roomName) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsByRoomName(roomName);
+        return responseForSuccess(list);
     }
 
     @GetMapping("/roomNameFuture")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByRoomNameInFuture(@RequestParam String roomName, @RequestParam String bookedFrom) {
-        return bookingService.getAllBookingsByRoomNameInFuture(roomName, LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsByRoomNameInFuture(@RequestParam String roomName, @RequestParam String bookedFrom) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsByRoomNameInFuture(roomName, LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
     @GetMapping("/roomNamePast")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByRoomNameInPast(@RequestParam String roomName, @RequestParam String bookedTo) {
-        return bookingService.getAllBookingsByRoomNameInPast(roomName, LocalDateTime.parse(bookedTo, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsByRoomNameInPast(@RequestParam String roomName, @RequestParam String bookedTo) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsByRoomNameInPast(roomName, LocalDateTime.parse(bookedTo, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
     @GetMapping("/{userLogin}")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByUserLogin(@RequestParam String userLogin) {
-        return bookingService.getBookingsForUserByUserLogin(userLogin);
+    public ResponseEntity<?> getAllBookingsByUserLogin(@RequestParam String userLogin) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingsForUserByUserLogin(userLogin);
+        return responseForSuccess(list);
     }
 
     @GetMapping("/userNamePast")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByUserLoginInPast(@RequestParam String userLogin, @RequestParam String bookedTo) {
-        return bookingService.getBookingsInPastByUser(userLogin, LocalDateTime.parse(bookedTo, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsByUserLoginInPast(@RequestParam String userLogin, @RequestParam String bookedTo) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingsInPastByUser(userLogin, LocalDateTime.parse(bookedTo, dateTimeFormatter));
+        return responseForSuccess(list);
     }
 
     @GetMapping("/userNameFuture")
-    public List<RoomBookingNameAndSurnameDto> getAllBookingsByUserLoginInFuture(@RequestParam String userLogin, @RequestParam String bookedFrom) {
-        return bookingService.getBookingsInFutureByUser(userLogin, LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+    public ResponseEntity<?> getAllBookingsByUserLoginInFuture(@RequestParam String userLogin, @RequestParam String bookedFrom) {
+        List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingsInFutureByUser(userLogin, LocalDateTime.parse(bookedFrom, dateTimeFormatter));
+        return responseForSuccess(list);
+    }
+
+    private ResponseEntity<List<RoomBookingNameAndSurnameDto>> responseForSuccess(List<RoomBookingNameAndSurnameDto> list) {
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> responseForSuccess(Booking bookedRoom, HttpHeaders responseHeaders) {
+        return new ResponseEntity<>(bookedRoom, responseHeaders, HttpStatus.CREATED);
     }
 }

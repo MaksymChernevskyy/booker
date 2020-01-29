@@ -17,34 +17,53 @@ import java.util.List;
 @RequestMapping(UserController.BASE_URL)
 public class UserController {
 
-  public static final String BASE_URL = "users";
-  private UserService userService;
+    public static final String BASE_URL = "users";
+    private UserService userService;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-  @PostMapping()
-  public ResponseEntity<?> createNewUser(@Valid @RequestBody UserDto userDto) {
-    User addedUser = userService.saveUser(userDto);
-    HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.setLocation(URI.create(String.format("/user/%s", addedUser.getLogin())));
-    return new ResponseEntity<>(addedUser, responseHeaders, HttpStatus.CREATED);
-  }
+    @PostMapping()
+    public ResponseEntity<?> createNewUser(@Valid @RequestBody UserDto userDto) {
+        User addedUser = userService.saveUser(userDto);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setLocation(URI.create(String.format("/user/%s", addedUser.getLogin())));
+        return getResponseForSuccess(addedUser, responseHeaders);
+    }
 
-  @PutMapping("/{userLogin}")
-  public void update(@PathVariable String userLogin, @Valid @RequestBody UserDto userDto) {
-    userService.updateUser(userLogin, userDto);
-  }
 
-  @DeleteMapping( {"/{userLogin}"})
-  public void delete(@PathVariable String userLogin) {
-    userService.deleteUser(userLogin);
-  }
+    @PutMapping("/{userLogin}")
+    public ResponseEntity<?> update(@PathVariable String userLogin, @Valid @RequestBody UserDto userDto) {
+        userService.updateUser(userLogin, userDto);
+        return getResponseForSuccess(userDto);
+    }
 
-  @GetMapping( {"", "/"})
-  public List<UserWithoutPasswordDto> getAllUsers() {
-    return userService.getAllUsers();
-  }
+    @DeleteMapping({"/{userLogin}"})
+    public ResponseEntity<?> delete(@PathVariable String userLogin) {
+        userService.deleteUser(userLogin);
+        return getResponseForSuccess();
+    }
 
+    @GetMapping({"", "/"})
+    public ResponseEntity<?> getAllUsers() {
+        List<UserWithoutPasswordDto> list = userService.getAllUsers();
+        return getResponseForSuccess(list);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(List<UserWithoutPasswordDto> list) {
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(User addedUser, HttpHeaders responseHeaders) {
+        return new ResponseEntity<>(addedUser, responseHeaders, HttpStatus.CREATED);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> getResponseForSuccess(@RequestBody @Valid UserDto userDto) {
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
 }

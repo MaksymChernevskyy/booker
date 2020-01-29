@@ -22,7 +22,7 @@ public class GetAllBookingsForRoomInGivenTimeRangeUsecase {
     private MapBookings mapBookings;
     private DateChecker dateChecker;
 
-    public GetAllBookingsForRoomInGivenTimeRangeUsecase withRoomRepository(BookingRepository bookingRepository) {
+    public GetAllBookingsForRoomInGivenTimeRangeUsecase withBookingRepository(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
         return this;
     }
