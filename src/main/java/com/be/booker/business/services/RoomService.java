@@ -48,7 +48,7 @@ public class RoomService {
                 .run();
     }
 
-    public void updateRoom( String roomName, RoomDto roomDto) {
+    public void updateRoom(String roomName, RoomDto roomDto) {
         updateRoomUsecase
                 .withRoomRepository(roomRepository)
                 .forRoomDto(roomDto)

@@ -59,13 +59,7 @@ public class BookingRoomUsecase {
         Booking roomBooking = new Booking();
         roomBooking.setRoomName(roomBookingDto.getRoomName());
         roomBooking.setUserLogin(roomBookingDto.getUserLogin());
-        if (roomBooking.getBookedFrom() != null) {
-            throw new BadRequestException("Room is occupied at this time.");
-        }
         roomBooking.setBookedFrom(roomBookingDto.getBookedFrom());
-        if (roomBooking.getBookedTo() != null) {
-            throw new BadRequestException("Room is occupied at this time.");
-        }
         roomBooking.setBookedTo(roomBookingDto.getBookedTo());
         return bookingRepository.save(roomBooking);
     }
