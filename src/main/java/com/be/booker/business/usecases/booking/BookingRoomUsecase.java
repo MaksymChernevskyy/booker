@@ -51,11 +51,18 @@ public class BookingRoomUsecase {
         dateChecker.dateCheckerForSave(roomBookingDto.getBookedFrom(), roomBookingDto.getBookedTo());
         roomRepository.findById(roomBookingDto.getRoomName()).orElseThrow(() -> new BadRequestException("No such room."));
         userRepository.findById(roomBookingDto.getUserLogin()).orElseThrow(() -> new BadRequestException("No such user."));
-        List<Booking> bookingList = bookingRepository.getAllBookingsWithInDateFrameAndRoom(roomBookingDto.getBookedFrom(),
-                roomBookingDto.getBookedTo(), roomBookingDto.getRoomName());
+        validateBooking();
+        return createBooking();
+    }
+
+    private void validateBooking() {
+        List<Booking> bookingList = bookingRepository.getAllBookingsWithInDateFrameAndRoom(roomBookingDto.getBookedFrom(), roomBookingDto.getBookedTo(), roomBookingDto.getRoomName());
         if (!bookingList.isEmpty()) {
             throw new BadRequestException("Room is occupied at this time.");
         }
+    }
+
+    private Booking createBooking() {
         Booking roomBooking = new Booking();
         roomBooking.setRoomName(roomBookingDto.getRoomName());
         roomBooking.setUserLogin(roomBookingDto.getUserLogin());
