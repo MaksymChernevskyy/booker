@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DateChecker {
 
-  void dateCheckerForSave(LocalDateTime bookedFrom, LocalDateTime bookedTo) {
+  public void dateCheckerForSave(LocalDateTime bookedFrom, LocalDateTime bookedTo) {
     if (bookedFrom == null || bookedTo == null) {
       return;
     }
@@ -22,7 +22,7 @@ public class DateChecker {
     }
   }
 
-  void dateCheckerForSearching(LocalDateTime bookedFrom, LocalDateTime bookedTo) {
+  public void dateCheckerForSearching(LocalDateTime bookedFrom, LocalDateTime bookedTo) {
     if (bookedTo.equals(bookedFrom)) {
       throw new BadRequestException("End date is the same like start date.");
     }

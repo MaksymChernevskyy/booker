@@ -1,17 +1,20 @@
-package com.be.booker.business.usecases.booking;
+package com.be.booker.business.usecases.booking.findbyuser;
 
 import com.be.booker.business.entity.Booking;
-import com.be.booker.business.entitydto.RoomBookingNameAndSurnameDto;
+import com.be.booker.business.entity.entitydto.RoomBookingNameAndSurnameDto;
 import com.be.booker.business.exceptions.BadRequestException;
 import com.be.booker.business.repository.BookingRepository;
 import com.be.booker.business.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.be.booker.business.usecases.booking.DateChecker;
+import com.be.booker.business.usecases.booking.MapBookings;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GetBookingScheduleForGivenUserUsecase {
+public class GetBookingsForUserInGivenTimeRangeUsecase {
   private BookingRepository bookingRepository;
   private UserRepository userRepository;
   private String userLogin;
@@ -20,37 +23,37 @@ public class GetBookingScheduleForGivenUserUsecase {
   private MapBookings mapBookings;
   private DateChecker dateChecker;
 
-  public GetBookingScheduleForGivenUserUsecase withBookingRepository(BookingRepository bookingRepository) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withBookingRepository(BookingRepository bookingRepository) {
     this.bookingRepository = bookingRepository;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withUserRepository(UserRepository userRepository) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withUserRepository(UserRepository userRepository) {
     this.userRepository = userRepository;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withBookedFrom(LocalDateTime bookedFrom) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withBookedFrom(LocalDateTime bookedFrom) {
     this.bookedFrom = bookedFrom;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withBookedTo(LocalDateTime bookedTo) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withBookedTo(LocalDateTime bookedTo) {
     this.bookedTo = bookedTo;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withUserLogin(String userLogin) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withUserLogin(String userLogin) {
     this.userLogin = userLogin;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withMapBookings(MapBookings mapBookings) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withMapBookings(MapBookings mapBookings) {
     this.mapBookings = mapBookings;
     return this;
   }
 
-  public GetBookingScheduleForGivenUserUsecase withDateChecker(DateChecker dateChecker) {
+  public GetBookingsForUserInGivenTimeRangeUsecase withDateChecker(DateChecker dateChecker) {
     this.dateChecker = dateChecker;
     return this;
   }
@@ -67,14 +70,8 @@ public class GetBookingScheduleForGivenUserUsecase {
     if (bookedFrom != null && bookedTo != null) {
       roomBookingEntityList = bookingRepository.getAllBookingsWithInDateFrameAndUser(bookedFrom, bookedTo, userLogin);
     }
-    if (bookedFrom == null && bookedTo != null) {
-      roomBookingEntityList = bookingRepository.getAllBookingsInPastAndUser(bookedFrom, userLogin);
-    }
     if (bookedFrom != null && bookedTo == null) {
       roomBookingEntityList = bookingRepository.getAllBookingsInFutureAndUser(bookedTo, userLogin);
-    }
-    if (bookedFrom == null && bookedTo == null) {
-      roomBookingEntityList = bookingRepository.getAllBookingsForUser(userLogin);
     }
     return mapBookings.mapBookings(roomBookingEntityList);
   }

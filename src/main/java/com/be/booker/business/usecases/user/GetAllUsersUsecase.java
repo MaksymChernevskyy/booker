@@ -1,7 +1,7 @@
 package com.be.booker.business.usecases.user;
 
 import com.be.booker.business.entity.User;
-import com.be.booker.business.entitydto.UserWithoutPasswordDto;
+import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.repository.UserRepository;
 import org.springframework.stereotype.Component;
 

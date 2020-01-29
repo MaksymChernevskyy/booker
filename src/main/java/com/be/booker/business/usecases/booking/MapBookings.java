@@ -2,7 +2,7 @@ package com.be.booker.business.usecases.booking;
 
 import com.be.booker.business.entity.Booking;
 import com.be.booker.business.entity.User;
-import com.be.booker.business.entitydto.RoomBookingNameAndSurnameDto;
+import com.be.booker.business.entity.entitydto.RoomBookingNameAndSurnameDto;
 import com.be.booker.business.exceptions.BadRequestException;
 import com.be.booker.business.repository.UserRepository;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class MapBookings {
   @Autowired
   private UserRepository userRepository;
 
-  List<RoomBookingNameAndSurnameDto> mapBookings(List<Booking> roomBookingEntityList) {
+  public List<RoomBookingNameAndSurnameDto> mapBookings(List<Booking> roomBookingEntityList) {
     List<RoomBookingNameAndSurnameDto> roomBookingNameSurnameList = new ArrayList<>();
     for (Booking booking : roomBookingEntityList) {
       RoomBookingNameAndSurnameDto roomBookingNameSurname = new RoomBookingNameAndSurnameDto();

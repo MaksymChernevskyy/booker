@@ -1,7 +1,7 @@
 package com.be.booker.business.usecases.room;
 
 import com.be.booker.business.entity.Room;
-import com.be.booker.business.entitydto.RoomDto;
+import com.be.booker.business.entity.entitydto.RoomDto;
 import com.be.booker.business.exceptions.AlreadyExistsException;
 import com.be.booker.business.repository.RoomRepository;
 import org.springframework.stereotype.Component;

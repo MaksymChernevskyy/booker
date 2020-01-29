@@ -1,15 +1,14 @@
 package com.be.booker.business.services;
 
 import com.be.booker.business.entity.User;
-import com.be.booker.business.entitydto.UserDto;
-import com.be.booker.business.entitydto.UserWithoutPasswordDto;
+import com.be.booker.business.entity.entitydto.UserDto;
+import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.repository.UserRepository;
 import com.be.booker.business.usecases.user.DeleteUserUsecase;
 import com.be.booker.business.usecases.user.GetAllUsersUsecase;
 import com.be.booker.business.usecases.user.SaveUserUsecase;
 import com.be.booker.business.usecases.user.UpdateUserUsecase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

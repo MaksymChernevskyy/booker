@@ -1,4 +1,4 @@
-package com.be.booker.business.entitydto;
+package com.be.booker.business.entity.entitydto;
 
 import lombok.*;
 
