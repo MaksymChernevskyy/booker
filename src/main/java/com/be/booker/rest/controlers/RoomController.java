@@ -33,7 +33,7 @@ public class RoomController {
     }
 
     @PutMapping("/{roomName}")
-    public ResponseEntity<?> update(@PathVariable String roomName, @Valid @RequestBody RoomDto roomDto) {
+    public ResponseEntity<?> update(@PathVariable String roomName, @Valid @RequestBody(required = false) RoomDto roomDto) {
         roomService.updateRoom(roomName, roomDto);
         return getResponseForSuccess(roomDto);
     }

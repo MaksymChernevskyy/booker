@@ -36,19 +36,19 @@ public class BookingController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getBookingScheduleForAllRoomsInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo) {
+    public ResponseEntity<?> getBookingScheduleForAllRoomsInGivenTimeRange(@RequestParam String bookedFrom, @RequestParam String bookedTo) {
         List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingScheduleForAllBookingsInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter));
         return responseForSuccess(list);
     }
 
     @GetMapping("{/givenRoomByTimeRange}")
-    public ResponseEntity<?> getAllBookingsForRoomInGivenTimeRange(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String roomName) {
+    public ResponseEntity<?> getAllBookingsForRoomInGivenTimeRange(@RequestParam String bookedFrom, @RequestParam String bookedTo, @RequestParam String roomName) {
         List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsForRoomInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), roomName);
         return responseForSuccess(list);
     }
 
     @GetMapping({"/givenUser"})
-    public ResponseEntity<?> getBookingScheduleForGivenUser(@RequestParam(required = false) String bookedFrom, @RequestParam(required = false) String bookedTo, @RequestParam(required = false) String userLogin) {
+    public ResponseEntity<?> getBookingScheduleForGivenUser(@RequestParam String bookedFrom, @RequestParam String bookedTo, @RequestParam String userLogin) {
         List<RoomBookingNameAndSurnameDto> list = bookingService.getBookingScheduleForGivenUserInGivenTimeRange(LocalDateTime.parse(bookedFrom, dateTimeFormatter), LocalDateTime.parse(bookedTo, dateTimeFormatter), userLogin);
         return responseForSuccess(list);
     }
@@ -60,13 +60,13 @@ public class BookingController {
     }
 
     @GetMapping("/allBookingsFuture")
-    public ResponseEntity<?> getAllBookingsInFuture(@RequestParam(required = false) String bookedFrom) {
+    public ResponseEntity<?> getAllBookingsInFuture(@RequestParam String bookedFrom) {
         List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsInFuture(LocalDateTime.parse(bookedFrom, dateTimeFormatter));
         return responseForSuccess(list);
     }
 
     @GetMapping("/allBookingsPast")
-    public ResponseEntity<?> getAllBookingsInPast(@RequestParam(required = false) String bookedTo) {
+    public ResponseEntity<?> getAllBookingsInPast(@RequestParam String bookedTo) {
         List<RoomBookingNameAndSurnameDto> list = bookingService.getAllBookingsInPast(LocalDateTime.parse(bookedTo, dateTimeFormatter));
         return responseForSuccess(list);
     }
