@@ -6,14 +6,12 @@ import com.be.booker.business.entity.entitydto.UserDto;
 import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -36,6 +34,13 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @GetMapping({"/{userLogin}"})
+    public ResponseEntity<?> getByLogin(@PathVariable String userLogin) {
+        UserDto userDto = userService.getUser(userLogin);
+        return getResponseForSuccess(userDto);
+    }
+
+
     @DeleteMapping({"/{userLogin}"})
     public ResponseEntity<?> delete(@PathVariable String userLogin) {
         userService.deleteUser(userLogin);
@@ -56,7 +61,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private ResponseEntity<?> getResponseEntityForSuccess(@RequestBody @Valid RegistrationForm registrationForm) {
-        return new ResponseEntity<>(registrationForm, HttpStatus.OK);
+    private ResponseEntity<?> getResponseForSuccess(UserDto userDto) {
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }
