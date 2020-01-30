@@ -27,20 +27,16 @@ public class UpdateUserUsecase {
         return this;
     }
 
-    public void run() {
-        updateUser();
+    public User run() {
+        return updateUser();
     }
 
-    private void updateUser() {
+    private User updateUser() {
         User userForUpdate = userRepository.findById(userLogin).orElseThrow(() -> new BadRequestException("No such user."));
-        if (!userDto.getName().isEmpty() && !userDto.getName().equals(userForUpdate.getName())) {
-            userForUpdate.setName(userDto.getName());
-        }
-        if (!userDto.getPassword().isEmpty() && !userDto.getPassword().equals(userForUpdate.getPassword())) {
-            userForUpdate.setPassword(userDto.getPassword());
-        }
-        if (!userDto.getSurname().isEmpty() && !userDto.getSurname().equals(userForUpdate.getSurname())) {
-            userForUpdate.setSurname(userDto.getSurname());
-        }
+//        userForUpdate.setLogin(userDto.getLogin());
+        userForUpdate.setName(userDto.getName());
+        userForUpdate.setPassword(userDto.getPassword());
+        userForUpdate.setSurname(userDto.getSurname());
+        return userForUpdate;
     }
 }

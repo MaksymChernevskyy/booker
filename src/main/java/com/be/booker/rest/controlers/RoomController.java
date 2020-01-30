@@ -4,6 +4,7 @@ import com.be.booker.business.entity.Room;
 import com.be.booker.business.entity.entitydto.RoomDto;
 import com.be.booker.business.services.RoomService;
 import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class RoomController {
     public static final String BASE_URL = "room";
     private RoomService roomService;
 
+    @Autowired
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
@@ -44,7 +46,7 @@ public class RoomController {
         return getResponseForSuccess();
     }
 
-    @GetMapping({"", "/"})
+    @GetMapping({"/"})
     public ResponseEntity<?> getAllRooms() {
         List<RoomDto> list = roomService.getAllRooms();
         return getResponseForSuccess(list);

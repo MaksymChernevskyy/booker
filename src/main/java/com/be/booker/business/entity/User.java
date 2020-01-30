@@ -21,17 +21,7 @@ import java.util.Collection;
 @Setter
 @Getter
 @EqualsAndHashCode
-public class User implements UserDetails {
-
-    public User(String login, String name, String surname, String password) {
-        this.login = login;
-        this.name = name;
-        this.surname = surname;
-        this.password = password;
-    }
-
-    public User() {
-    }
+public class User {
 
     @Id
     @Column(name = "login")
@@ -45,34 +35,4 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public String getUsername() {
-        return login;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

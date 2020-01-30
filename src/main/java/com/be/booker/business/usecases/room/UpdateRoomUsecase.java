@@ -27,11 +27,11 @@ public class UpdateRoomUsecase {
         return this;
     }
 
-    public void run() {
-        roomForUpdate();
+    public Room run() {
+        return roomForUpdate();
     }
 
-    private void roomForUpdate() {
+    private Room roomForUpdate() {
         Room updatedRoom = roomRepository.findById(roomName).orElseThrow(() -> new BadRequestException("No such room."));
         if (roomDto.getLocationDescription() != null && !roomDto.getLocationDescription().isEmpty() && !roomDto.getLocationDescription().equals(updatedRoom.getLocationDescription())) {
             updatedRoom.setLocationDescription(roomDto.getLocationDescription());
@@ -46,6 +46,6 @@ public class UpdateRoomUsecase {
             updatedRoom.setPhoneNumber(roomDto.getPhoneNumber());
         }
         roomRepository.save(updatedRoom);
-
+        return updatedRoom;
     }
 }

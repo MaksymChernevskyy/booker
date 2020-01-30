@@ -4,10 +4,7 @@ import com.be.booker.business.entity.User;
 import com.be.booker.business.entity.entitydto.UserDto;
 import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.repository.UserRepository;
-import com.be.booker.business.usecases.user.DeleteUserUsecase;
-import com.be.booker.business.usecases.user.GetAllUsersUsecase;
-import com.be.booker.business.usecases.user.SaveUserUsecase;
-import com.be.booker.business.usecases.user.UpdateUserUsecase;
+import com.be.booker.business.usecases.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +16,16 @@ public class UserService {
     private SaveUserUsecase saveUserUsecase;
     private UpdateUserUsecase updateUserUsecase;
     private GetAllUsersUsecase getAllUsersUsecase;
+    private GetUserUsecase getUserUsecase;
     private UserRepository userRepository;
 
     @Autowired
-    public UserService(DeleteUserUsecase deleteRoomUsecase, SaveUserUsecase saveRoomUsecase, UpdateUserUsecase updateUserUsecase,
-                       GetAllUsersUsecase getAllUsersUsecase, UserRepository userRepository) {
-        this.deleteUserUsecase = deleteRoomUsecase;
-        this.saveUserUsecase = saveRoomUsecase;
+    public UserService(DeleteUserUsecase deleteUserUsecase, SaveUserUsecase saveUserUsecase, UpdateUserUsecase updateUserUsecase, GetAllUsersUsecase getAllUsersUsecase, GetUserUsecase getUserUsecase, UserRepository userRepository) {
+        this.deleteUserUsecase = deleteUserUsecase;
+        this.saveUserUsecase = saveUserUsecase;
         this.updateUserUsecase = updateUserUsecase;
         this.getAllUsersUsecase = getAllUsersUsecase;
+        this.getUserUsecase = getUserUsecase;
         this.userRepository = userRepository;
     }
 
@@ -51,11 +49,18 @@ public class UserService {
                 .run();
     }
 
-    public void updateUser(String userLogin, UserDto userDto) {
-        updateUserUsecase
+    public User updateUser(String userLogin, UserDto userDto) {
+       return updateUserUsecase
                 .withUserRepository(userRepository)
                 .withUserLogin(userLogin)
                 .forUserDto(userDto)
+                .run();
+    }
+
+    public UserDto getUser(String userLogin) {
+       return getUserUsecase
+                .withUserRepository(userRepository)
+                .withLogin(userLogin)
                 .run();
     }
 }

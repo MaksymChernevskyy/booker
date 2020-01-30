@@ -1,6 +1,6 @@
 package com.be.booker.business.configs.security;
 
-import com.be.booker.business.entity.User;
+import com.be.booker.business.entity.entitydto.UserDto;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -12,7 +12,7 @@ public class RegistrationForm {
     private String surname;
     private String password;
 
-    public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(login, passwordEncoder.encode(password), name, surname);
+    public UserDto toUser(PasswordEncoder passwordEncoder) {
+        return new UserDto(login, passwordEncoder.encode(password), name, surname);
     }
 }

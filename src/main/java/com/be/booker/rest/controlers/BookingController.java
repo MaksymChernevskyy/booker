@@ -4,6 +4,7 @@ import com.be.booker.business.entity.Booking;
 import com.be.booker.business.entity.entitydto.RoomBookingDto;
 import com.be.booker.business.entity.entitydto.RoomBookingNameAndSurnameDto;
 import com.be.booker.business.services.BookingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class BookingController {
     public static final String BASE_URL = "bookRoom";
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    @Autowired
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }

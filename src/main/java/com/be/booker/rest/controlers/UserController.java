@@ -1,12 +1,15 @@
 package com.be.booker.rest.controlers;
 
+import com.be.booker.business.configs.security.RegistrationForm;
 import com.be.booker.business.entity.User;
 import com.be.booker.business.entity.entitydto.UserDto;
 import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
 import com.be.booker.business.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,24 +22,18 @@ public class UserController {
 
     public static final String BASE_URL = "users";
     private UserService userService;
+    private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    @Autowired
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
-
-    @PostMapping()
-    public ResponseEntity<?> createNewUser(@Valid @RequestBody UserDto userDto) {
-        User addedUser = userService.saveUser(userDto);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setLocation(URI.create(String.format("/user/%s", addedUser.getLogin())));
-        return getResponseForSuccess(addedUser, responseHeaders);
-    }
-
 
     @PutMapping("/{userLogin}")
-    public ResponseEntity<?> update(@PathVariable String userLogin, @Valid @RequestBody UserDto userDto) {
-        userService.updateUser(userLogin, userDto);
-        return getResponseForSuccess(userDto);
+    public ResponseEntity<?> update(@PathVariable String userLogin, @Valid @RequestBody RegistrationForm registrationForm) {
+        User updatedUser = userService.updateUser(userLogin, registrationForm.toUser(passwordEncoder));
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @DeleteMapping({"/{userLogin}"})
@@ -45,7 +42,7 @@ public class UserController {
         return getResponseForSuccess();
     }
 
-    @GetMapping({"", "/"})
+    @GetMapping({"/"})
     public ResponseEntity<?> getAllUsers() {
         List<UserWithoutPasswordDto> list = userService.getAllUsers();
         return getResponseForSuccess(list);
@@ -55,15 +52,11 @@ public class UserController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    private ResponseEntity<?> getResponseForSuccess(User addedUser, HttpHeaders responseHeaders) {
-        return new ResponseEntity<>(addedUser, responseHeaders, HttpStatus.CREATED);
-    }
-
     private ResponseEntity<?> getResponseForSuccess() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private ResponseEntity<?> getResponseForSuccess(@RequestBody @Valid UserDto userDto) {
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    private ResponseEntity<?> getResponseEntityForSuccess(@RequestBody @Valid RegistrationForm registrationForm) {
+        return new ResponseEntity<>(registrationForm, HttpStatus.OK);
     }
 }
