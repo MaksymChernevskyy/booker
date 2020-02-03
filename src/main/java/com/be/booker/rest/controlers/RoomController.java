@@ -26,7 +26,7 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> createNewRoom(@Valid @RequestBody RoomDto roomDto) {
         Room addedRoom = roomService.saveRoom(roomDto);
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -34,8 +34,8 @@ public class RoomController {
         return getResponseForSuccess(addedRoom, responseHeaders);
     }
 
-    @PutMapping("/{roomName}")
-    public ResponseEntity<?> update(@PathVariable String roomName, @Valid @RequestBody(required = false) RoomDto roomDto) {
+    @PatchMapping("/{roomName}")
+    public ResponseEntity<?> update(@PathVariable("roomName") String roomName, @Valid @RequestBody(required = false) RoomDto roomDto) {
         roomService.updateRoom(roomName, roomDto);
         return getResponseForSuccess(roomDto);
     }

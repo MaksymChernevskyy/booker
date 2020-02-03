@@ -8,7 +8,6 @@ import com.be.booker.business.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,17 +19,19 @@ public class UserController {
 
     public static final String BASE_URL = "users";
     private UserService userService;
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @PutMapping("/{userLogin}")
-    public ResponseEntity<?> update(@PathVariable String userLogin, @Valid @RequestBody RegistrationForm registrationForm) {
-        User updatedUser = userService.updateUser(userLogin, registrationForm.toUser(passwordEncoder));
+    @PatchMapping("/{userLogin}")
+    public ResponseEntity<?> update(@PathVariable("userLogin") String userLogin, @Valid @RequestBody(required = false) RegistrationForm registrationForm) {
+        User updatedUser = userService.updateUser(userLogin, registrationForm);
+        return responseForSuccess(updatedUser);
+    }
+
+    private ResponseEntity<?> responseForSuccess(User updatedUser) {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

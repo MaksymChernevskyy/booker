@@ -1,5 +1,6 @@
 package com.be.booker.business.services;
 
+import com.be.booker.business.configs.security.RegistrationForm;
 import com.be.booker.business.entity.User;
 import com.be.booker.business.entity.entitydto.UserDto;
 import com.be.booker.business.entity.entitydto.UserWithoutPasswordDto;
@@ -49,16 +50,16 @@ public class UserService {
                 .run();
     }
 
-    public User updateUser(String userLogin, UserDto userDto) {
-       return updateUserUsecase
+    public User updateUser(String userLogin, RegistrationForm registrationForm) {
+        return updateUserUsecase
                 .withUserRepository(userRepository)
                 .withUserLogin(userLogin)
-                .forUserDto(userDto)
+                .forRegistrationForm(registrationForm)
                 .run();
     }
 
     public UserDto getUser(String userLogin) {
-       return getUserUsecase
+        return getUserUsecase
                 .withUserRepository(userRepository)
                 .withLogin(userLogin)
                 .run();
