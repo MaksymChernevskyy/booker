@@ -140,9 +140,3 @@ mvn exec:java
 ## API ##
 
 Application is available on localhost:[PORT]. Use ```http://localhost:[PORT]/swagger-ui.html#/booking-controller```
-To test all possibilities of Booking API. You have to log in, configure login and password in [security.properties]:
-
-```
-spring.security.admin-name=yourLogin
-spring.security.admin-password=yourPassword
-```
